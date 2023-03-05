@@ -6,3 +6,12 @@ razorpay
 
 key-id=  rzp_test_BLLK7sDtz0PbCG
 key secret= oIisc9XBvx20O48UUwedgUr8
+
+
+
+
+
+
+
+API=Application Programming Interface
+REST=Representational State Transfer

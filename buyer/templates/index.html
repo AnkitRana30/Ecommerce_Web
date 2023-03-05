@@ -177,7 +177,7 @@
 												</fieldset>
 													
 											</form> {% endcomment %}
-											<button><a href="{% url 'add_to_cart' i.id %}" > Add to Cart</a></button>
+											<button onclick="{add_to_cart({{i.id}})}"> Add to Cart</button>
 									
 										</div>
 									</div>
@@ -382,6 +382,23 @@
 			<div class="clearfix"> </div>
 		</div>
 	</div>
+	<script>
+		function add_to_cart(pid){
+			let d1={
+				id : pid
+			}
+			
+			$.ajax({
+				data:d1,
+				method:'GET',
+				url:"{% url 'add_to_cart' %}",
+				success:function(response){
+					alert(response.msg)
+				}
+			}
+			)
+		}
+	</script>
 <!-- //newsletter -->
 <!-- footer -->
 {% endblock %}

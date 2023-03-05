@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .models import *
 from django.core.mail import send_mail
 from random import randint
@@ -208,16 +208,17 @@ def logout(request):
     del request.session['email']
     return redirect('login')
 
-def add_to_cart(request,pk):
+def add_to_cart(request):
     try:
         buyer_obj = Buyer.objects.get(email = request.session['email'])
+        p_data=Products.objects.get(id=request.GET['id'])
         Cart.objects.create(
-            product = Products.objects.get(id = pk),
+            product =p_data,
             buyer = buyer_obj
         )
-        return redirect('index')
+        return JsonResponse({'msg':'Successfully Added!!'})
     except:
-        return redirect('login')
+        return JsonResponse({'msg':'login nahi kiya hai'})
     
 
 razorpay_client = razorpay.Client(
@@ -329,3 +330,48 @@ def paymenthandler(request):
     else:
        # if other than POST request is made.
         return HttpResponseBadRequest()
+    
+
+def del_cart_item(request):
+    b_obj=Buyer.objects.get(email=request.session['email'])
+    c_row=Cart.objects.get(id=request.GET['c_item'])
+    c_row.delete()
+    cart_data=Cart.objects.filter(buyer=b_obj)
+    p_count=len(cart_data)
+    final_list=[]
+    for s_cart_item in cart_data:
+        final_list.append({'id':s_cart_item.id,
+                           'pname':s_cart_item.product.product_name,
+                           'price':s_cart_item.product.price,
+                           'pic':s_cart_item.product.pic.url})
+        
+        
+    # payment update code
+    total_amount=0
+    for i in cart_data:
+        total_amount += i.product.price
+
+        currency = 'INR'
+        if total_amount == 0:
+            total_amount = 10
+        amount = total_amount * 100  # Rs. 200
+        
+        # Create a Razorpay Order
+        razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                        currency=currency,
+                                                        payment_capture='0'))
+        
+        # order id of newly created order.
+        razorpay_order_id = razorpay_order['id']
+        callback_url = 'paymenthandler/'
+        
+        # we need to pass these details to frontend.
+        context = {}
+        context['razorpay_order_id'] = razorpay_order_id
+        context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+        context['razorpay_amount'] = amount
+        context['currency'] = currency
+        context['callback_url'] = callback_url
+        context['total_amount'] = total_amount
+        context.update({'msg':'Succsefuly Deleted!!','p_count':p_count, 'cart_data':final_list})
+    return JsonResponse(context)

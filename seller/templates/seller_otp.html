@@ -34,7 +34,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			</div>
 			<div class="login-block">
 				<div class="form">
-					<form action="{% url 'otp' %}" method="post">
+					<form action="{% url 'seller_otp' %}" method="post">
 						{% csrf_token %}
 						{{msg}}
 						<input type="text" name="u_otp" placeholder="Enter Your OTP" required=" ">

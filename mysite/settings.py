@@ -134,5 +134,9 @@ EMAIL_HOST_PASSWORD = 'nsbctqfoxhbceceb'
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
-RAZOR_KEY_ID = 'rzp_test_BLLK7sDtz0PbCG'
-RAZOR_KEY_SECRET = 'oIisc9XBvx20O48UUwedgUr8'   
+with open(os.path.join(BASE_DIR,'rzp.csv'),'r') as f1:  
+    list1=f1.readlines()
+    str1=list1[-1]
+    f_list=str1.split(",")
+RAZOR_KEY_ID = f_list[0]
+RAZOR_KEY_SECRET = f_list[1][:-1]  

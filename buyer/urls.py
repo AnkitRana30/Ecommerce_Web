@@ -27,9 +27,10 @@ urlpatterns = [
     path('otp/',otp,name="otp"),
     path('logout/',logout,name="logout"),
     path('cart/',cart,name="cart"),
-    path('add_to_cart/<int:pk>', add_to_cart, name="add_to_cart"),
+    path('add_to_cart/', add_to_cart, name="add_to_cart"),
     path('delete_cart/<int:pk>', delete_cart, name="delete_cart"),
     path('cart/paymenthandler/',paymenthandler, name='paymenthandler'),
+    path('del_cart_item/',del_cart_item, name='del_cart_item'),
     
     # path('add_data/',add_data,name="add_data"),
     # path('delete_row/',delete_row,name="delete_row"),
